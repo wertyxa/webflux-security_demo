@@ -1,13 +1,11 @@
 package com.wertyxa.webfluxsecurity.security;
 
-import com.wertyxa.webfluxsecurity.exception.AuthException;
 import com.wertyxa.webfluxsecurity.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.Data;
+import io.jsonwebtoken.security.Keys;
 import reactor.core.publisher.Mono;
 
-import java.util.Base64;
 import java.util.Date;
 
 public class JwtHandler {
@@ -29,9 +27,10 @@ public class JwtHandler {
     }
     private Claims getClaimsFromToken(String token){
         return Jwts.parser()
-                .setSigningKey(Base64.getEncoder().encodeToString(secret.getBytes()))
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
     public static class VerificationResult{
         public Claims claims;

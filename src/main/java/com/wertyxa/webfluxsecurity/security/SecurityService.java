@@ -2,17 +2,19 @@ package com.wertyxa.webfluxsecurity.security;
 
 import com.wertyxa.webfluxsecurity.entity.UserEntity;
 import com.wertyxa.webfluxsecurity.exception.AuthException;
-import com.wertyxa.webfluxsecurity.repository.UserRepository;
 import com.wertyxa.webfluxsecurity.service.UserService;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -44,13 +46,13 @@ public class SecurityService {
     private TokenDetails generateToken(Date expirationDate, Map<String, Object> claims, String subject){
         Date createDate = new Date();
         String token = Jwts.builder()
-                .addClaims(claims)
-                .setIssuer(issuer)
-                .setSubject(subject)
-                .setIssuedAt(createDate)
-                .setExpiration(expirationDate)
-                .setId(UUID.randomUUID().toString())
-                .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secret.getBytes()))
+                .claims(claims)
+                .issuer(issuer)
+                .subject(subject)
+                .issuedAt(createDate)
+                .expiration(expirationDate)
+                .id(UUID.randomUUID().toString())
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
         return TokenDetails.builder()
                 .token(token)

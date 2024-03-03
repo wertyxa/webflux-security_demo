@@ -39,8 +39,6 @@ dependencies {
     implementation "org.mapstruct:mapstruct:$mapStructVersion"
 
     implementation "io.jsonwebtoken:jjwt:$jsonWebTokenVersion"
-// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'org.projectlombok:lombok:1.18.18'
     compileOnly 'org.projectlombok:lombok'
